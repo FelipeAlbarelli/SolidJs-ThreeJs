@@ -1,7 +1,8 @@
-import { onMount } from "solid-js";
+import { from, onMount } from "solid-js";
 import { BoxGeometry, Color, ConeGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import "./MainScene.scss";
-import { createPlayer } from "../game/Player";
+import { applyPlayerCommand, createPlayer, playerOnFrame } from "../game/Player";
+import {commands$, init} from "../game/keyboardCtl"
 type Rect = {
     width: number,
     height: number,
@@ -42,13 +43,21 @@ export const MainScene = () => {
 
     const player = createPlayer();
 
-    scene.add(player);
+    scene.add(player.mesh);
     camera.position.z = 50;
 
+    const command = from(commands$)
+
     function animate() {
+        const commands = command();
+
+        commands?.forEach( cmd => {
+            applyPlayerCommand(player, cmd);
+        });
+
+        playerOnFrame(player);
+
         renderer.render( scene, camera );
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
     }
     renderer.setAnimationLoop( animate );
 
