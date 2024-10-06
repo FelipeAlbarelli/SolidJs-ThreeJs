@@ -1,6 +1,7 @@
 import { onMount } from "solid-js";
-import { BoxGeometry, Color, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { BoxGeometry, Color, ConeGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import "./MainScene.scss";
+import { createPlayer } from "../game/Player";
 type Rect = {
     width: number,
     height: number,
@@ -37,9 +38,12 @@ export const MainScene = () => {
     const geometry = new BoxGeometry( 1, 1, 1 );
     const material = new MeshBasicMaterial( { color: 0x00ff00 } );
     const cube = new Mesh( geometry, material );
-    scene.add( cube );
+    // scene.add( cube );
 
-    camera.position.z = 5;
+    const player = createPlayer();
+
+    scene.add(player);
+    camera.position.z = 50;
 
     function animate() {
         renderer.render( scene, camera );
